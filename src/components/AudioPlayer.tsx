@@ -87,7 +87,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                       {currentTrack.title || "No audio loaded"}
                   </CardDescription>
               </CardHeader>
-              <CardContent className="flex-grow flex flex-col justify-center items-center space-y-4 p-4 pt-0">
+              <CardContent className="flex-grow flex flex-col justify-center items-center space-y-4 p-4">
                 <div className="flex items-center justify-center flex-wrap gap-0.5 sm:gap-2">
                   <Button variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10" onClick={previousTrack} disabled={currentTrackIndex === 0}>
                     <SkipBack className="h-4 w-4 sm:h-5 sm:w-5" />
