@@ -42,6 +42,8 @@ interface AudioPlayerProps {
   toggleTranscript: () => void;
   previousTrack: () => void;
   nextTrack: () => void;
+  onAddFiles: () => void;
+  onClearPlaylist: () => void;
 }
 
 const formatTime = (seconds: number) => {
@@ -68,6 +70,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   toggleTranscript,
   previousTrack,
   nextTrack,
+  onAddFiles,
+  onClearPlaylist,
 }) => {
   const isMobile = useIsMobile();
   const currentTrack = tracks[currentTrackIndex];
@@ -147,7 +151,13 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
               </CardContent>
             </Card>
             <div className="flex-grow min-h-0">
-              <Playlist tracks={tracks} currentTrackIndex={currentTrackIndex} onSelectTrack={selectTrack} />
+              <Playlist 
+                tracks={tracks} 
+                currentTrackIndex={currentTrackIndex} 
+                onSelectTrack={selectTrack} 
+                onAddFiles={onAddFiles}
+                onClearPlaylist={onClearPlaylist}
+              />
             </div>
           </div>
         </ResizablePanel>

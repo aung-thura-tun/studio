@@ -44,6 +44,9 @@ export const useAudioPlayer = (audioRef: React.RefObject<HTMLAudioElement>) => {
         audioRef.current.play().catch(e => console.error("Autoplay was prevented", e));
         setIsPlaying(true);
         setCurrentTime(0);
+    } else if (audioRef.current && !track) {
+        audioRef.current.pause();
+        audioRef.current.src = "";
     }
   }, [currentTrackIndex, tracks, audioRef]);
 
@@ -124,10 +127,16 @@ export const useAudioPlayer = (audioRef: React.RefObject<HTMLAudioElement>) => {
     );
 
     const wasEmpty = tracks.length === 0;
-    setTracks(prev => [...prev, ...newTracks]);
+    setTracks(prev => [...prev, ...newTracks].sort((a,b) => a.title.localeCompare(b.title)));
     if (wasEmpty && newTracks.length > 0) {
       setCurrentTrackIndex(0);
     }
+  };
+
+  const clearPlaylist = () => {
+    tracks.forEach(track => URL.revokeObjectURL(track.audioSrc));
+    setTracks([]);
+    setCurrentTrackIndex(null);
   };
 
   const playPause = () => {
@@ -218,6 +227,7 @@ export const useAudioPlayer = (audioRef: React.RefObject<HTMLAudioElement>) => {
     handleSeek,
     handlePlaybackRateChange,
     toggleTranscript,
+    clearPlaylist,
     // Audio event handlers
     onTimeUpdate,
     onLoadedMetadata,

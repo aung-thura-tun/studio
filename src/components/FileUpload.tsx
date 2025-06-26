@@ -3,22 +3,9 @@
 import React from "react";
 import { Upload, FileAudio } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-interface FileUploadProps {
-  handleFileUpload: (files: FileList | null) => void;
-}
-
-const FileUpload: React.FC<FileUploadProps> = ({
-  handleFileUpload
-}) => {
-  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    handleFileUpload(event.target.files);
-    // Reset file input to allow uploading the same file(s) again
-    event.target.value = '';
-  };
-
+const FileUpload: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center h-full gap-8 text-center p-4">
       <div className="space-y-2">
@@ -49,14 +36,6 @@ const FileUpload: React.FC<FileUploadProps> = ({
                 <p className="text-xs">Files will be paired by name (e.g., audio.mp3 & audio.srt)</p>
               </div>
             </Label>
-            <Input
-              id="file-upload"
-              type="file"
-              accept="audio/*,.srt"
-              className="hidden"
-              onChange={onFileChange}
-              multiple
-            />
           </CardContent>
         </Card>
     </div>
