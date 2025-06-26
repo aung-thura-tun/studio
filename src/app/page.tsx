@@ -16,20 +16,14 @@ export default function Home() {
     isPlaying,
     currentTime,
     duration,
-    volume,
     playbackRate,
-    isAiEnabled,
-    summary,
-    isSummarizing,
     // Handlers
     handleAudioUpload,
     handleSrtUpload,
     playPause,
     skip,
     handleSeek,
-    handleVolumeChange,
     handlePlaybackRateChange,
-    handleToggleAi,
     // Audio event handlers
     onTimeUpdate,
     onLoadedMetadata,
@@ -60,17 +54,11 @@ export default function Home() {
           isPlaying={isPlaying}
           currentTime={currentTime}
           duration={duration}
-          volume={volume}
           playbackRate={playbackRate}
-          isAiEnabled={isAiEnabled}
-          summary={summary}
-          isSummarizing={isSummarizing}
           playPause={playPause}
           skip={skip}
           handleSeek={handleSeek}
-          handleVolumeChange={handleVolumeChange}
           handlePlaybackRateChange={handlePlaybackRateChange}
-          handleToggleAi={handleToggleAi}
         />
       ) : (
         <FileUpload

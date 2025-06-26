@@ -6,23 +6,16 @@ import {
   Pause,
   Rewind,
   FastForward,
-  Volume2,
-  Volume1,
-  VolumeX,
-  Sparkles,
   Wind,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { cn } from "@/lib/utils";
 import TranscriptDisplay from "@/components/TranscriptDisplay";
 import type { Subtitle } from "@/types";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -34,17 +27,11 @@ interface AudioPlayerProps {
   isPlaying: boolean;
   currentTime: number;
   duration: number;
-  volume: number;
   playbackRate: number;
-  isAiEnabled: boolean;
-  summary: string;
-  isSummarizing: boolean;
   playPause: () => void;
   skip: (seconds: number) => void;
   handleSeek: (time: number) => void;
-  handleVolumeChange: (value: number[]) => void;
   handlePlaybackRateChange: (value: number[]) => void;
-  handleToggleAi: (enabled: boolean) => void;
 }
 
 const formatTime = (seconds: number) => {
@@ -61,20 +48,13 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   isPlaying,
   currentTime,
   duration,
-  volume,
   playbackRate,
-  isAiEnabled,
-  summary,
-  isSummarizing,
   playPause,
   skip,
   handleSeek,
-  handleVolumeChange,
   handlePlaybackRateChange,
-  handleToggleAi,
 }) => {
   const isMobile = useIsMobile();
-  const VolumeIcon = volume === 0 ? VolumeX : volume < 0.5 ? Volume1 : Volume2;
 
   return (
     <div className="flex h-full flex-col">
@@ -115,13 +95,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                   </div>
                 </div>
                 <div className="flex items-center gap-4 w-full pt-4">
-                  <VolumeIcon className="h-5 w-5" />
-                  <Slider
-                    value={[volume]}
-                    max={1}
-                    step={0.05}
-                    onValueChange={handleVolumeChange}
-                  />
                   <Wind className="h-5 w-5" />
                   <Slider
                     value={[playbackRate]}
@@ -132,44 +105,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                   />
                   <span className="text-xs font-mono w-10 text-center">{playbackRate.toFixed(2)}x</span>
                 </div>
-              </CardContent>
-            </Card>
-            <Card className="flex-grow flex flex-col">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                <div className="space-y-1.5">
-                  <CardTitle>AI Summary</CardTitle>
-                  <CardDescription>
-                    AI-powered summary of your audio.
-                  </CardDescription>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Label htmlFor="ai-switch" className="flex items-center gap-2 cursor-pointer">
-                    <Sparkles className={cn("h-4 w-4", isAiEnabled && "text-accent")} />
-                    <span>AI</span>
-                  </Label>
-                  <Switch
-                    id="ai-switch"
-                    checked={isAiEnabled}
-                    onCheckedChange={handleToggleAi}
-                  />
-                </div>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                {isSummarizing ? (
-                  <div className="flex items-center justify-center h-full">
-                    <p className="text-muted-foreground animate-pulse">
-                      Generating summary...
-                    </p>
-                  </div>
-                ) : summary ? (
-                  <p className="text-sm">{summary}</p>
-                ) : (
-                  <p className="text-sm text-muted-foreground">
-                    {isAiEnabled
-                      ? "Summary will appear here after playing and pausing the audio."
-                      : "Enable AI to generate a summary."}
-                  </p>
-                )}
               </CardContent>
             </Card>
           </div>
