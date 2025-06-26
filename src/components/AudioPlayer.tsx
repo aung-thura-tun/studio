@@ -80,14 +80,14 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
       >
         <ResizablePanel defaultSize={isTranscriptVisible ? 45 : 100} minSize={30}>
           <div className="flex h-full flex-col pr-0 md:pr-4 space-y-4">
-            <Card className="flex-shrink-0 flex flex-col rounded-t-lg bg-secondary">
-               <CardHeader className="p-4 pb-2 bg-background rounded-t-lg">
+            <Card className="flex-shrink-0 flex flex-col rounded-t-lg bg-background">
+               <CardHeader className="p-4 pb-2 bg-secondary rounded-t-lg">
                   <CardTitle>Now Playing</CardTitle>
                   <CardDescription className="truncate">
                       {currentTrack.title || "No audio loaded"}
                   </CardDescription>
               </CardHeader>
-              <CardContent className="flex-grow flex flex-col justify-center items-center space-y-4 p-4">
+              <CardContent className="flex-grow flex flex-col justify-center items-center space-y-4 p-4 pt-4">
                 <div className="flex items-center justify-center flex-wrap gap-0.5 sm:gap-2">
                   <Button variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10" onClick={previousTrack} disabled={currentTrackIndex === 0}>
                     <SkipBack className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -155,8 +155,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
         {isTranscriptVisible && 
           <ResizablePanel defaultSize={55} minSize={30}>
             <div className="flex h-full flex-col pl-0 md:pl-4">
-              <Card className="h-full flex flex-col rounded-t-lg bg-secondary">
-                <CardHeader className="p-4 bg-background rounded-t-lg">
+              <Card className="h-full flex flex-col rounded-t-lg bg-background">
+                <CardHeader className="p-4 bg-secondary rounded-t-lg">
                   <CardTitle>Transcript</CardTitle>
                   <CardDescription className="truncate">
                     {currentTrack.srtFile?.name || "No transcript loaded"}

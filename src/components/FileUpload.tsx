@@ -23,7 +23,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
     <div className="flex flex-col items-center justify-center h-full gap-8 text-center p-4">
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl font-headline">
-          Welcome to AudioScribe Sync
+          Welcome to AudioScribe
         </h1>
         <p className="text-muted-foreground md:text-xl">
           Upload your audio and SRT files to begin.
