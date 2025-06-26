@@ -31,7 +31,7 @@ const Playlist: React.FC<PlaylistProps> = ({ tracks, currentTrackIndex, onSelect
       <CardHeader className="p-4 bg-background rounded-t-lg">
         <CardTitle>Playlist</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow p-4 pt-0 min-h-0">
+      <CardContent className="flex-grow p-4 min-h-0">
         <ScrollArea className="h-full">
           <div className="space-y-1">
             {tracks.map((track, index) => (
