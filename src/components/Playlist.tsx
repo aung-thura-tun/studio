@@ -48,7 +48,6 @@ const Playlist: React.FC<PlaylistProps> = ({ tracks, currentTrackIndex, onSelect
                     {index === currentTrackIndex ? <Play className="h-5 w-5 text-accent flex-shrink-0" /> : <Music4 className="h-5 w-5 flex-shrink-0" />}
                     <div className="flex-grow overflow-hidden">
                         <p className="truncate font-semibold">{track.title}</p>
-                        <p className="text-xs text-muted-foreground truncate">{track.audioFile.name}</p>
                     </div>
                     <span className="text-xs font-mono text-muted-foreground flex-shrink-0">{formatTime(track.duration)}</span>
                 </div>
