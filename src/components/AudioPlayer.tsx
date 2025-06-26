@@ -7,8 +7,7 @@ import {
   Rewind,
   FastForward,
   Wind,
-  PanelRightOpen,
-  PanelRightClose,
+  Captions,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -104,9 +103,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                             {currentTrack.title || "No audio loaded"}
                         </CardDescription>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={toggleTranscript}>
-                        {isTranscriptVisible ? <PanelRightClose className="h-5 w-5" /> : <PanelRightOpen className="h-5 w-5" />}
-                    </Button>
                 </div>
               </CardHeader>
               <CardContent className="flex-grow flex flex-col justify-center items-center space-y-4">
@@ -141,6 +137,9 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                   </Button>
                   <Button variant="ghost" size="icon" onClick={() => skip(5)}>
                     <FastForward className="h-6 w-6" />
+                  </Button>
+                  <Button variant={isTranscriptVisible ? "secondary" : "ghost"} size="icon" onClick={toggleTranscript}>
+                    <Captions className="h-6 w-6" />
                   </Button>
                 </div>
                 <div className="w-full space-y-2">
