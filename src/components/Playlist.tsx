@@ -28,7 +28,7 @@ const formatTime = (seconds: number) => {
 const Playlist: React.FC<PlaylistProps> = ({ tracks, currentTrackIndex, onSelectTrack }) => {
   return (
     <Card className="h-full flex flex-col rounded-t-lg bg-secondary">
-      <CardHeader className="p-4">
+      <CardHeader className="p-4 bg-background rounded-t-lg">
         <CardTitle>Playlist</CardTitle>
       </CardHeader>
       <CardContent className="flex-grow p-4 pt-0 min-h-0">
