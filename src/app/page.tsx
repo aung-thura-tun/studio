@@ -41,7 +41,7 @@ export default function Home() {
     <main className="container mx-auto p-4 h-screen max-h-screen">
       <audio
         ref={audioRef}
-        src={currentTrack?.audioSrc || ""}
+        src={currentTrack?.audioSrc || null}
         onTimeUpdate={onTimeUpdate}
         onLoadedMetadata={onLoadedMetadata}
         onEnded={onEnded}
