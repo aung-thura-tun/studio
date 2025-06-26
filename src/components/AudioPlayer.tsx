@@ -106,7 +106,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                 </div>
               </CardHeader>
               <CardContent className="flex-grow flex flex-col justify-center items-center space-y-4">
-                <div className="flex items-center justify-center flex-wrap gap-2 sm:gap-4">
+                <div className="flex items-center justify-center flex-wrap gap-1 sm:gap-2">
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="ghost" className="text-muted-foreground px-2">
@@ -130,16 +130,16 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                     </PopoverContent>
                   </Popover>
                   <Button variant="ghost" size="icon" onClick={() => skip(-5)}>
-                    <Rewind className="h-5 w-5 sm:h-6 sm:w-6" />
+                    <Rewind className="h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
-                  <Button size="icon" className="h-14 w-14 sm:h-16 sm:w-16 rounded-full" onClick={playPause}>
-                    {isPlaying ? <Pause className="h-7 w-7 sm:h-8 sm:w-8" /> : <Play className="h-7 w-7 sm:h-8 sm:w-8" />}
+                  <Button size="icon" className="h-12 w-12 sm:h-14 sm:w-14 rounded-full" onClick={playPause}>
+                    {isPlaying ? <Pause className="h-6 w-6 sm:h-7 sm:w-7" /> : <Play className="h-6 w-6 sm:h-7 sm:w-7" />}
                   </Button>
                   <Button variant="ghost" size="icon" onClick={() => skip(5)}>
-                    <FastForward className="h-5 w-5 sm:h-6 sm:w-6" />
+                    <FastForward className="h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
                   <Button variant={isTranscriptVisible ? "secondary" : "ghost"} size="icon" onClick={toggleTranscript}>
-                    <Captions className="h-5 w-5 sm:h-6 sm:w-6" />
+                    <Captions className="h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
                 </div>
                 <div className="w-full space-y-2">
