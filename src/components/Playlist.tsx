@@ -27,13 +27,13 @@ const formatTime = (seconds: number) => {
 
 const Playlist: React.FC<PlaylistProps> = ({ tracks, currentTrackIndex, onSelectTrack }) => {
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader>
+    <Card className="h-full flex flex-col border-0 shadow-none">
+      <CardHeader className="p-0 pb-4">
         <CardTitle>Playlist</CardTitle>
       </CardHeader>
       <CardContent className="flex-grow p-0 min-h-0">
         <ScrollArea className="h-full">
-          <div className="p-2 pr-4 space-y-1">
+          <div className="space-y-1">
             {tracks.map((track, index) => (
               <Button
                 key={track.id}
