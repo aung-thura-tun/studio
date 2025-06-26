@@ -24,6 +24,18 @@ export const useAudioPlayer = (audioRef: React.RefObject<HTMLAudioElement>) => {
     }
   }, [tracks.length]);
 
+  const previousTrack = () => {
+    if (currentTrackIndex !== null && currentTrackIndex > 0) {
+      selectTrack(currentTrackIndex - 1);
+    }
+  };
+
+  const nextTrack = () => {
+    if (currentTrackIndex !== null && currentTrackIndex < tracks.length - 1) {
+      selectTrack(currentTrackIndex + 1);
+    }
+  };
+
   useEffect(() => {
     const track = currentTrackIndex !== null ? tracks[currentTrackIndex] : null;
     if (audioRef.current && track) {
@@ -199,6 +211,8 @@ export const useAudioPlayer = (audioRef: React.RefObject<HTMLAudioElement>) => {
     // Handlers
     handleFileUpload,
     selectTrack,
+    previousTrack,
+    nextTrack,
     playPause,
     skip,
     handleSeek,

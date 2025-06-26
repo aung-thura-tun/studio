@@ -8,6 +8,8 @@ import {
   FastForward,
   Wind,
   Captions,
+  SkipBack,
+  SkipForward,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -38,6 +40,8 @@ interface AudioPlayerProps {
   handlePlaybackRateChange: (value: number[]) => void;
   isTranscriptVisible: boolean;
   toggleTranscript: () => void;
+  previousTrack: () => void;
+  nextTrack: () => void;
 }
 
 const formatTime = (seconds: number) => {
@@ -62,6 +66,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   handlePlaybackRateChange,
   isTranscriptVisible,
   toggleTranscript,
+  previousTrack,
+  nextTrack,
 }) => {
   const isMobile = useIsMobile();
   const currentTrack = tracks[currentTrackIndex];
@@ -106,48 +112,57 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                 </div>
               </CardHeader>
               <CardContent className="flex-grow flex flex-col justify-center items-center space-y-4">
-                <div className="flex items-center justify-center flex-wrap gap-1 sm:gap-2">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="ghost" className="text-muted-foreground px-2">
-                        <Wind className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
-                        <span className="text-xs font-mono w-8 sm:w-10 text-center">
-                          {playbackRate.toFixed(2)}x
-                        </span>
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-56">
-                      <div className="grid gap-4 py-2">
-                        <p className="text-sm font-medium leading-none">Playback Speed</p>
-                        <Slider
-                          value={[playbackRate]}
-                          min={0.5}
-                          max={2}
-                          step={0.25}
-                          onValueChange={handlePlaybackRateChange}
-                        />
-                      </div>
-                    </PopoverContent>
-                  </Popover>
+                <div className="flex items-center justify-center flex-wrap gap-0.5 sm:gap-2">
+                  <Button variant="ghost" size="icon" onClick={previousTrack} disabled={currentTrackIndex === 0}>
+                    <SkipBack className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </Button>
                   <Button variant="ghost" size="icon" onClick={() => skip(-5)}>
                     <Rewind className="h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
-                  <Button size="icon" className="h-12 w-12 sm:h-14 sm:w-14 rounded-full" onClick={playPause}>
+                  <Button size="icon" className="h-10 w-10 sm:h-14 sm:w-14 rounded-full" onClick={playPause}>
                     {isPlaying ? <Pause className="h-6 w-6 sm:h-7 sm:w-7" /> : <Play className="h-6 w-6 sm:h-7 sm:w-7" />}
                   </Button>
                   <Button variant="ghost" size="icon" onClick={() => skip(5)}>
                     <FastForward className="h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
-                  <Button variant={isTranscriptVisible ? "secondary" : "ghost"} size="icon" onClick={toggleTranscript}>
-                    <Captions className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <Button variant="ghost" size="icon" onClick={nextTrack} disabled={currentTrackIndex === tracks.length - 1}>
+                    <SkipForward className="h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
                 </div>
                 <div className="w-full space-y-2">
-                  <Slider
-                    value={[currentTime]}
-                    max={duration}
-                    onValueChange={(value) => handleSeek(value[0])}
-                  />
+                    <div className="flex items-center gap-2 sm:gap-4">
+                        <Slider
+                            value={[currentTime]}
+                            max={duration}
+                            onValueChange={(value) => handleSeek(value[0])}
+                            className="flex-grow"
+                        />
+                         <Popover>
+                            <PopoverTrigger asChild>
+                              <Button variant="ghost" className="text-muted-foreground px-2">
+                                <Wind className="h-4 w-4 sm:h-5 sm:w-5" />
+                                <span className="text-xs font-mono w-8 text-center hidden sm:inline">
+                                  {playbackRate.toFixed(2)}x
+                                </span>
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-56">
+                              <div className="grid gap-4 py-2">
+                                <p className="text-sm font-medium leading-none">Playback Speed</p>
+                                <Slider
+                                  value={[playbackRate]}
+                                  min={0.5}
+                                  max={2}
+                                  step={0.25}
+                                  onValueChange={handlePlaybackRateChange}
+                                />
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                          <Button variant={isTranscriptVisible ? "secondary" : "ghost"} size="icon" onClick={toggleTranscript}>
+                            <Captions className="h-4 w-4 sm:h-5 sm:w-5" />
+                          </Button>
+                    </div>
                   <div className="flex justify-between text-xs text-muted-foreground font-mono">
                     <span>{formatTime(currentTime)}</span>
                     <span>{formatTime(duration)}</span>

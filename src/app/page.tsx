@@ -19,6 +19,8 @@ export default function Home() {
     // Handlers
     handleFileUpload,
     selectTrack,
+    previousTrack,
+    nextTrack,
     toggleTranscript,
     playPause,
     skip,
@@ -39,6 +41,7 @@ export default function Home() {
     <main className="container mx-auto p-4 h-screen max-h-screen">
       <audio
         ref={audioRef}
+        src={currentTrack?.audioSrc || ""}
         onTimeUpdate={onTimeUpdate}
         onLoadedMetadata={onLoadedMetadata}
         onEnded={onEnded}
@@ -63,6 +66,8 @@ export default function Home() {
           handlePlaybackRateChange={handlePlaybackRateChange}
           isTranscriptVisible={isTranscriptVisible}
           toggleTranscript={toggleTranscript}
+          previousTrack={previousTrack}
+          nextTrack={nextTrack}
         />
       ) : (
         <FileUpload handleFileUpload={handleFileUpload} />
