@@ -144,7 +144,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                 </div>
               </CardContent>
             </Card>
-            <div className="h-full flex-grow overflow-auto">
+            <div className="flex-grow min-h-0">
               <Playlist tracks={tracks} currentTrackIndex={currentTrackIndex} onSelectTrack={selectTrack} />
             </div>
           </div>
