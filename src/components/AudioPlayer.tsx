@@ -111,28 +111,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
               </CardHeader>
               <CardContent className="flex-grow flex flex-col justify-center items-center space-y-4">
                 <div className="flex items-center gap-4">
-                  <Button variant="ghost" size="icon" onClick={() => skip(-5)}>
-                    <Rewind className="h-6 w-6" />
-                  </Button>
-                  <Button size="icon" className="h-16 w-16 rounded-full" onClick={playPause}>
-                    {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />}
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={() => skip(5)}>
-                    <FastForward className="h-6 w-6" />
-                  </Button>
-                </div>
-                <div className="w-full space-y-2">
-                  <Slider
-                    value={[currentTime]}
-                    max={duration}
-                    onValueChange={(value) => handleSeek(value[0])}
-                  />
-                  <div className="flex justify-between text-xs text-muted-foreground font-mono">
-                    <span>{formatTime(currentTime)}</span>
-                    <span>{formatTime(duration)}</span>
-                  </div>
-                </div>
-                <div className="flex justify-center items-center w-full pt-4">
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="ghost" className="text-muted-foreground px-2">
@@ -155,6 +133,26 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                       </div>
                     </PopoverContent>
                   </Popover>
+                  <Button variant="ghost" size="icon" onClick={() => skip(-5)}>
+                    <Rewind className="h-6 w-6" />
+                  </Button>
+                  <Button size="icon" className="h-16 w-16 rounded-full" onClick={playPause}>
+                    {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />}
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => skip(5)}>
+                    <FastForward className="h-6 w-6" />
+                  </Button>
+                </div>
+                <div className="w-full space-y-2">
+                  <Slider
+                    value={[currentTime]}
+                    max={duration}
+                    onValueChange={(value) => handleSeek(value[0])}
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground font-mono">
+                    <span>{formatTime(currentTime)}</span>
+                    <span>{formatTime(duration)}</span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
