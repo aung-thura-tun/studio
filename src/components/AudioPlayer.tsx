@@ -7,6 +7,8 @@ import {
   Rewind,
   FastForward,
   Wind,
+  PanelRightOpen,
+  PanelRightClose,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -17,12 +19,14 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import TranscriptDisplay from "@/components/TranscriptDisplay";
-import type { Subtitle } from "@/types";
+import type { Subtitle, Track } from "@/types";
 import { useIsMobile } from "@/hooks/use-mobile";
+import Playlist from "./Playlist";
 
 interface AudioPlayerProps {
-  audioFile: File | null;
-  srtFile: File | null;
+  tracks: Track[];
+  currentTrackIndex: number;
+  selectTrack: (index: number) => void;
   subtitles: Subtitle[];
   isPlaying: boolean;
   currentTime: number;
@@ -32,6 +36,8 @@ interface AudioPlayerProps {
   skip: (seconds: number) => void;
   handleSeek: (time: number) => void;
   handlePlaybackRateChange: (value: number[]) => void;
+  isTranscriptVisible: boolean;
+  toggleTranscript: () => void;
 }
 
 const formatTime = (seconds: number) => {
@@ -42,8 +48,9 @@ const formatTime = (seconds: number) => {
 };
 
 const AudioPlayer: React.FC<AudioPlayerProps> = ({
-  audioFile,
-  srtFile,
+  tracks,
+  currentTrackIndex,
+  selectTrack,
   subtitles,
   isPlaying,
   currentTime,
@@ -53,8 +60,31 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
   skip,
   handleSeek,
   handlePlaybackRateChange,
+  isTranscriptVisible,
+  toggleTranscript,
 }) => {
   const isMobile = useIsMobile();
+  const currentTrack = tracks[currentTrackIndex];
+
+  const transcriptPanel = (
+    <div className="flex h-full flex-col">
+      <Card className="h-full flex flex-col border-0 md:border-l rounded-none md:rounded-l-lg">
+        <CardHeader>
+          <CardTitle>Transcript</CardTitle>
+          <CardDescription className="truncate">
+            {currentTrack.srtFile?.name || "No transcript loaded"}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex-grow overflow-hidden">
+          <TranscriptDisplay
+            subtitles={subtitles}
+            currentTime={currentTime}
+            onSeek={handleSeek}
+          />
+        </CardContent>
+      </Card>
+    </div>
+  );
 
   return (
     <div className="flex h-full flex-col">
@@ -62,14 +92,21 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
         direction={isMobile ? "vertical" : "horizontal"}
         className="h-full w-full rounded-lg border"
       >
-        <ResizablePanel defaultSize={45} minSize={30}>
+        <ResizablePanel defaultSize={isTranscriptVisible ? 45 : 100} minSize={30}>
           <div className="flex h-full flex-col p-4 md:p-6 space-y-4">
-            <Card className="flex-grow flex flex-col">
-              <CardHeader>
-                <CardTitle>Audio Player</CardTitle>
-                <CardDescription className="truncate">
-                  {audioFile?.name || "No audio loaded"}
-                </CardDescription>
+            <Card className="flex-shrink-0 flex flex-col">
+               <CardHeader>
+                <div className="flex justify-between items-center">
+                    <div>
+                        <CardTitle>Now Playing</CardTitle>
+                        <CardDescription className="truncate">
+                            {currentTrack.title || "No audio loaded"}
+                        </CardDescription>
+                    </div>
+                    <Button variant="ghost" size="icon" onClick={toggleTranscript}>
+                        {isTranscriptVisible ? <PanelRightClose className="h-5 w-5" /> : <PanelRightOpen className="h-5 w-5" />}
+                    </Button>
+                </div>
               </CardHeader>
               <CardContent className="flex-grow flex flex-col justify-center items-center space-y-4">
                 <div className="flex items-center gap-4">
@@ -107,28 +144,17 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                 </div>
               </CardContent>
             </Card>
+            <div className="h-full flex-grow overflow-auto">
+              <Playlist tracks={tracks} currentTrackIndex={currentTrackIndex} onSelectTrack={selectTrack} />
+            </div>
           </div>
         </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={55} minSize={30}>
-          <div className="flex h-full flex-col">
-            <Card className="h-full flex flex-col border-0 md:border-l rounded-none md:rounded-l-lg">
-              <CardHeader>
-                <CardTitle>Transcript</CardTitle>
-                <CardDescription className="truncate">
-                  {srtFile?.name || "No transcript loaded"}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex-grow overflow-hidden">
-                <TranscriptDisplay
-                  subtitles={subtitles}
-                  currentTime={currentTime}
-                  onSeek={handleSeek}
-                />
-              </CardContent>
-            </Card>
-          </div>
-        </ResizablePanel>
+        {isTranscriptVisible && <ResizableHandle withHandle />}
+        {isTranscriptVisible && 
+          <ResizablePanel defaultSize={55} minSize={30}>
+            {transcriptPanel}
+          </ResizablePanel>
+        }
       </ResizablePanelGroup>
     </div>
   );

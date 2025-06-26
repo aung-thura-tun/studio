@@ -4,3 +4,13 @@ export interface Subtitle {
   end: number;
   text: string;
 }
+
+export interface Track {
+  id: string;
+  audioFile: File;
+  srtFile: File | null;
+  audioSrc: string;
+  subtitles: Subtitle[];
+  title: string;
+  duration: number;
+}

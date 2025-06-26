@@ -1,86 +1,120 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { parseSrt } from "@/lib/srt";
-import type { Subtitle } from "@/types";
+import type { Subtitle, Track } from "@/types";
+import { v4 as uuidv4 } from 'uuid';
 
 export const useAudioPlayer = (audioRef: React.RefObject<HTMLAudioElement>) => {
-  const [audioFile, setAudioFile] = useState<File | null>(null);
-  const [srtFile, setSrtFile] = useState<File | null>(null);
-  const [audioSrc, setAudioSrc] = useState<string | null>(null);
-  const [subtitles, setSubtitles] = useState<Subtitle[]>([]);
+  const [tracks, setTracks] = useState<Track[]>([]);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState<number | null>(null);
   
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [playbackRate, setPlaybackRate] = useState(1);
+  const [isTranscriptVisible, setIsTranscriptVisible] = useState(true);
 
   const { toast } = useToast();
+
+  const selectTrack = useCallback((index: number) => {
+    if (index >= 0 && index < tracks.length) {
+      setCurrentTrackIndex(index);
+    }
+  }, [tracks.length]);
+
+  useEffect(() => {
+    const track = currentTrackIndex !== null ? tracks[currentTrackIndex] : null;
+    if (audioRef.current && track) {
+        audioRef.current.src = track.audioSrc;
+        audioRef.current.load();
+        audioRef.current.play().catch(e => console.error("Autoplay was prevented", e));
+        setIsPlaying(true);
+        setCurrentTime(0);
+    }
+  }, [currentTrackIndex, tracks, audioRef]);
+
 
   useEffect(() => {
     const storedRate = localStorage.getItem("audio_rate");
     if (storedRate) setPlaybackRate(parseFloat(storedRate));
+  }, []);
 
-    if (audioRef.current) {
-      audioRef.current.volume = 1;
-    }
-  }, [audioRef]);
+  const handleFileUpload = async (files: FileList | null) => {
+    if (!files) return;
 
-  const handleAudioUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && file.type.startsWith("audio/")) {
-      setAudioFile(file);
-      setAudioSrc(URL.createObjectURL(file));
-      // Reset state for new audio
-      setCurrentTime(0);
-      setDuration(0);
-      setSubtitles([]);
-      setSrtFile(null);
-    } else {
-      toast({
-        variant: "destructive",
-        title: "Invalid File",
-        description: "Please upload a valid audio file.",
-      });
-    }
-  };
-
-  const handleSrtUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && file.name.endsWith(".srt")) {
-      setSrtFile(file);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const content = e.target?.result as string;
-        try {
-          const parsedSubtitles = parseSrt(content);
-          if (parsedSubtitles.length === 0 && content.trim() !== "") {
-              throw new Error("Invalid SRT format.");
-          }
-          setSubtitles(parsedSubtitles);
-        } catch (error) {
-            toast({
-                variant: "destructive",
-                title: "SRT Parsing Error",
-                description: "Could not parse SRT file. Please check the format.",
-            });
-        }
-      };
-      reader.onerror = () => {
+    const audioFiles = Array.from(files).filter(f => f.type.startsWith("audio/"));
+    const srtFiles = Array.from(files).filter(f => f.name.endsWith(".srt"));
+    
+    if (audioFiles.length === 0) {
         toast({
             variant: "destructive",
-            title: "File Read Error",
-            description: "Could not read the SRT file.",
+            title: "No Audio Files",
+            description: "Please upload at least one audio file.",
         });
-      };
-      reader.readAsText(file);
-    } else {
-      toast({
-        variant: "destructive",
-        title: "Invalid File",
-        description: "Please upload a valid SRT file.",
-      });
+        return;
+    }
+
+    const srtMap = new Map<string, File>();
+    for (const srtFile of srtFiles) {
+        const nameWithoutExt = srtFile.name.replace(/\.[^/.]+$/, "");
+        srtMap.set(nameWithoutExt, srtFile);
+    }
+
+    const newTracks: Track[] = await Promise.all(
+      audioFiles.map(async (audioFile) => {
+        const nameWithoutExt = audioFile.name.replace(/\.[^/.]+$/, "");
+        const srtFile = srtMap.get(nameWithoutExt) || null;
+        let subtitles: Subtitle[] = [];
+
+        if (srtFile) {
+            try {
+                const srtText = await srtFile.text();
+                const parsedSubtitles = parseSrt(srtText);
+                if (parsedSubtitles.length === 0 && srtText.trim() !== "") {
+                    throw new Error("Invalid SRT format.");
+                }
+                subtitles = parsedSubtitles;
+            } catch (e) {
+                toast({
+                    variant: "destructive",
+                    title: "SRT Parse Error",
+                    description: `Could not parse ${srtFile.name}.`,
+                });
+            }
+        }
+        
+        const audioSrc = URL.createObjectURL(audioFile);
+        const duration = await new Promise<number>(resolve => {
+            const tempAudio = document.createElement('audio');
+            tempAudio.onloadedmetadata = () => {
+                resolve(tempAudio.duration);
+                URL.revokeObjectURL(audioSrc); // Clean up
+            };
+            tempAudio.onerror = () => {
+                resolve(0); // Could not load
+                URL.revokeObjectURL(audioSrc); // Clean up
+            }
+            tempAudio.src = audioSrc;
+        });
+
+        return {
+            id: uuidv4(),
+            audioFile,
+            srtFile,
+            audioSrc: URL.createObjectURL(audioFile), // Create a new one as the previous was revoked
+            subtitles,
+            title: nameWithoutExt,
+            duration
+        };
+      })
+    );
+
+    const wasEmpty = tracks.length === 0;
+    setTracks(prev => [...prev, ...newTracks]);
+    if (wasEmpty && newTracks.length > 0) {
+      setCurrentTrackIndex(0);
     }
   };
 
@@ -91,7 +125,6 @@ export const useAudioPlayer = (audioRef: React.RefObject<HTMLAudioElement>) => {
       } else {
         audioRef.current.play();
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
@@ -116,6 +149,8 @@ export const useAudioPlayer = (audioRef: React.RefObject<HTMLAudioElement>) => {
     }
     localStorage.setItem("audio_rate", newRate.toString());
   };
+
+  const toggleTranscript = () => setIsTranscriptVisible(prev => !prev);
   
   // Audio element event handlers
   const onTimeUpdate = () => {
@@ -127,45 +162,48 @@ export const useAudioPlayer = (audioRef: React.RefObject<HTMLAudioElement>) => {
   const onLoadedMetadata = () => {
     if (audioRef.current) {
       setDuration(audioRef.current.duration);
-      audioRef.current.volume = 1;
+      audioRef.current.playbackRate = playbackRate;
     }
   };
 
-  const onEnded = () => setIsPlaying(false);
+  const onEnded = () => {
+    if (currentTrackIndex !== null && currentTrackIndex < tracks.length - 1) {
+      setCurrentTrackIndex(currentTrackIndex + 1);
+    } else {
+        setIsPlaying(false);
+    }
+  };
 
   const onPlay = () => setIsPlaying(true);
 
-  const onPause = () => {
-    setIsPlaying(false);
-  };
+  const onPause = () => setIsPlaying(false);
   
   const onError = () => {
       toast({
           variant: "destructive",
           title: "Audio Error",
-          description: "There was an error loading the audio file.",
+          description: "There was an error playing the audio file.",
       })
-      setAudioSrc(null);
-      setAudioFile(null);
+      setIsPlaying(false);
   }
 
   return {
     // State
-    audioFile,
-    srtFile,
-    audioSrc,
-    subtitles,
+    tracks,
+    currentTrackIndex,
     isPlaying,
     currentTime,
     duration,
     playbackRate,
+    isTranscriptVisible,
     // Handlers
-    handleAudioUpload,
-    handleSrtUpload,
+    handleFileUpload,
+    selectTrack,
     playPause,
     skip,
     handleSeek,
     handlePlaybackRateChange,
+    toggleTranscript,
     // Audio event handlers
     onTimeUpdate,
     onLoadedMetadata,

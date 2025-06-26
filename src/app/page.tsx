@@ -9,17 +9,17 @@ export default function Home() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const {
     // State
-    audioFile,
-    srtFile,
-    audioSrc,
-    subtitles,
+    tracks,
+    currentTrackIndex,
     isPlaying,
     currentTime,
     duration,
     playbackRate,
+    isTranscriptVisible,
     // Handlers
-    handleAudioUpload,
-    handleSrtUpload,
+    handleFileUpload,
+    selectTrack,
+    toggleTranscript,
     playPause,
     skip,
     handleSeek,
@@ -33,11 +33,12 @@ export default function Home() {
     onError,
   } = useAudioPlayer(audioRef);
 
+  const currentTrack = currentTrackIndex !== null ? tracks[currentTrackIndex] : null;
+
   return (
     <main className="container mx-auto p-4 h-screen max-h-screen">
       <audio
         ref={audioRef}
-        src={audioSrc ?? undefined}
         onTimeUpdate={onTimeUpdate}
         onLoadedMetadata={onLoadedMetadata}
         onEnded={onEnded}
@@ -46,11 +47,12 @@ export default function Home() {
         onError={onError}
         className="hidden"
       />
-      {audioSrc && subtitles.length > 0 ? (
+      {tracks.length > 0 && currentTrack && currentTrackIndex !== null ? (
         <AudioPlayer
-          audioFile={audioFile}
-          srtFile={srtFile}
-          subtitles={subtitles}
+          tracks={tracks}
+          currentTrackIndex={currentTrackIndex}
+          selectTrack={selectTrack}
+          subtitles={currentTrack.subtitles}
           isPlaying={isPlaying}
           currentTime={currentTime}
           duration={duration}
@@ -59,14 +61,11 @@ export default function Home() {
           skip={skip}
           handleSeek={handleSeek}
           handlePlaybackRateChange={handlePlaybackRateChange}
+          isTranscriptVisible={isTranscriptVisible}
+          toggleTranscript={toggleTranscript}
         />
       ) : (
-        <FileUpload
-          audioFile={audioFile}
-          srtFile={srtFile}
-          handleAudioUpload={handleAudioUpload}
-          handleSrtUpload={handleSrtUpload}
-        />
+        <FileUpload handleFileUpload={handleFileUpload} />
       )}
     </main>
   );
