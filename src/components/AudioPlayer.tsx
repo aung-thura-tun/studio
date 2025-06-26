@@ -96,7 +96,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
     <div className="flex h-full flex-col">
       <ResizablePanelGroup
         direction={isMobile ? "vertical" : "horizontal"}
-        className="h-full w-full rounded-lg border"
+        className="h-full w-full rounded-lg"
       >
         <ResizablePanel defaultSize={isTranscriptVisible ? 45 : 100} minSize={30}>
           <div className="flex h-full flex-col p-4 md:p-6 space-y-4">
