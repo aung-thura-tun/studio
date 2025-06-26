@@ -22,6 +22,7 @@ import TranscriptDisplay from "@/components/TranscriptDisplay";
 import type { Subtitle, Track } from "@/types";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Playlist from "./Playlist";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface AudioPlayerProps {
   tracks: Track[];
@@ -131,16 +132,29 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                     <span>{formatTime(duration)}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 w-full pt-4">
-                  <Wind className="h-5 w-5" />
-                  <Slider
-                    value={[playbackRate]}
-                    min={0.5}
-                    max={2}
-                    step={0.25}
-                    onValueChange={handlePlaybackRateChange}
-                  />
-                  <span className="text-xs font-mono w-10 text-center">{playbackRate.toFixed(2)}x</span>
+                <div className="flex justify-center items-center w-full pt-4">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="ghost" className="text-muted-foreground px-2">
+                        <Wind className="h-5 w-5 mr-2" />
+                        <span className="text-xs font-mono w-10 text-center">
+                          {playbackRate.toFixed(2)}x
+                        </span>
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-56">
+                      <div className="grid gap-4 py-2">
+                        <p className="text-sm font-medium leading-none">Playback Speed</p>
+                        <Slider
+                          value={[playbackRate]}
+                          min={0.5}
+                          max={2}
+                          step={0.25}
+                          onValueChange={handlePlaybackRateChange}
+                        />
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </CardContent>
             </Card>
