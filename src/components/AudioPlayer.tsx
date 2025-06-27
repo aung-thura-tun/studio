@@ -91,21 +91,21 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                       {currentTrack.title || "No audio loaded"}
                   </CardDescription>
               </CardHeader>
-              <CardContent className="flex-grow flex flex-col justify-center items-center space-y-4 p-4 pt-4">
+              <CardContent className="flex-grow flex flex-col justify-center items-center space-y-2 p-4 pt-4">
                 <div className="flex items-center justify-center flex-wrap gap-0.5 sm:gap-2">
-                  <Button variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10" onClick={previousTrack} disabled={currentTrackIndex === 0}>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-10 sm:w-10" onClick={previousTrack} disabled={currentTrackIndex === 0}>
                     <SkipBack className="h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10" onClick={() => skip(-5)}>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-10 sm:w-10" onClick={() => skip(-5)}>
                     <Rewind className="h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
                   <Button size="icon" className="h-10 w-10 sm:h-12 sm:w-12 rounded-full" onClick={playPause}>
                     {isPlaying ? <Pause className="h-6 w-6 sm:h-7 sm:w-7" /> : <Play className="h-6 w-6 sm:h-7 sm:w-7" />}
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10" onClick={() => skip(5)}>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-10 sm:w-10" onClick={() => skip(5)}>
                     <FastForward className="h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10" onClick={nextTrack} disabled={currentTrackIndex === tracks.length - 1}>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-10 sm:w-10" onClick={nextTrack} disabled={currentTrackIndex === tracks.length - 1}>
                     <SkipForward className="h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
                 </div>
