@@ -30,7 +30,7 @@ const formatTime = (seconds: number) => {
 const Playlist: React.FC<PlaylistProps> = ({ tracks, currentTrackIndex, onSelectTrack, onAddFiles, onClearPlaylist }) => {
   return (
     <Card className="h-full flex flex-col rounded-t-lg bg-background">
-      <CardHeader className="p-4 bg-secondary rounded-t-lg flex flex-row items-center justify-between">
+      <CardHeader className="p-4 card-header-background rounded-t-lg flex flex-row items-center justify-between">
         <CardTitle>Playlist</CardTitle>
         <div className="flex items-center gap-1">
             <Button variant="ghost" size="icon" onClick={onAddFiles} className="h-8 w-8">
