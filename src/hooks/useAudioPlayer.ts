@@ -200,11 +200,6 @@ export const useAudioPlayer = (audioRef: React.RefObject<HTMLAudioElement>) => {
   const onPause = () => setIsPlaying(false);
   
   const onError = () => {
-      toast({
-          variant: "destructive",
-          title: "Audio Error",
-          description: "There was an error playing the audio file.",
-      })
       setIsPlaying(false);
   }
 
