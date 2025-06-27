@@ -119,7 +119,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                         />
                          <Popover>
                             <PopoverTrigger asChild>
-                              <Button variant="ghost" className="text-muted-foreground px-2">
+                              <Button variant="ghost" className="text-muted-foreground px-2 h-9">
                                 <Wind className="h-4 w-4 sm:h-5 sm:w-5" />
                                 <span className="text-xs font-mono w-8 text-center hidden sm:inline">
                                   {playbackRate.toFixed(2)}x
@@ -139,7 +139,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                               </div>
                             </PopoverContent>
                           </Popover>
-                          <Button variant={isTranscriptVisible ? "secondary" : "ghost"} size="icon" onClick={toggleTranscript}>
+                          <Button variant={isTranscriptVisible ? "secondary" : "ghost"} size="icon" className="h-9 w-9" onClick={toggleTranscript}>
                             <Captions className="h-4 w-4 sm:h-5 sm:w-5" />
                           </Button>
                     </div>
