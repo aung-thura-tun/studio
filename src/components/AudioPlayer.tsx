@@ -166,7 +166,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
           <ResizablePanel defaultSize={55} minSize={30}>
             <div className="flex h-full flex-col pl-0 md:pl-4">
               <Card className="h-full flex flex-col rounded-t-lg bg-background">
-                <CardHeader className="p-4 bg-secondary rounded-t-lg">
+                <CardHeader className="p-4 pb-2 bg-secondary rounded-t-lg">
                   <CardTitle>Transcript</CardTitle>
                   <CardDescription className="truncate">
                     {currentTrack.srtFile?.name || "No transcript loaded"}
